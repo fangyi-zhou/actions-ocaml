@@ -5,17 +5,27 @@ import * as io from '@actions/io';
 import * as path from 'path';
 import {promises as fs} from 'fs';
 
-const OPAM_BINARY_URL = 'https://github.com/ocaml/opam/releases/download/2.0.5/opam-2.0.5-x86_64-linux';
+const OPAM_BINARY_URL_LINUX = 'https://github.com/ocaml/opam/releases/download/2.0.5/opam-2.0.5-x86_64-linux';
+const OPAM_BINARY_URL_DARWIN = 'https://github.com/ocaml/opam/releases/download/2.0.5/opam-2.0.5-x86_64-darwin';
+const OPAM_BINARY_URL_OPENBSD = 'https://github.com/ocaml/opam/releases/download/2.0.5/opam-2.0.5-x86_64-openbsd';
 const OPAM_VERSION = '2.0.5';
 
 function get_opam_url() : string {
-  // TODO: Check platform
-  return OPAM_BINARY_URL;
+  switch (process.platform) {
+    case 'darwin':
+      return OPAM_BINARY_URL_DARWIN;
+    case 'linux':
+      return OPAM_BINARY_URL_LINUX;
+    case 'openbsd':
+      return OPAM_BINARY_URL_OPENBSD
+    default:
+      throw Error("Unsupported Platform");
+  }
 }
 
 async function install_opam() {
   const local_bin = path.join(process.env.HOME!, ".local", "bin");
-  const opam_path = await tc.downloadTool(OPAM_BINARY_URL);
+  const opam_path = await tc.downloadTool(get_opam_url());
   core.debug(`Downloaded opam ${OPAM_VERSION} to ${opam_path}`);
   await fs.chmod(opam_path, 0o755); // set executable
   core.debug(`Setting opam executable`)
