@@ -1,19 +1,19 @@
 import * as core from '@actions/core';
-import {wait} from './wait'
+import * as tc from '@actions/tool-cache';
+import * as exec from '@actions/exec';
+
+const OPAM_INSTALL_SH : string = "https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh";
+
+async function install_opam() {
+  const opam_install_sh = await tc.downloadTool(OPAM_INSTALL_SH);
+  core.debug(`Downloading opam install.sh to ${opam_install_sh}`);
+  await exec.exec("sh", [opam_install_sh]);
+  await exec.exec("opam", ["init", "-y"]);
+}
 
 async function run() {
-  try {
-    const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
-
-    core.debug((new Date()).toTimeString())
-    await wait(parseInt(ms, 10));
-    core.debug((new Date()).toTimeString())
-
-    core.setOutput('time', new Date().toTimeString());
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+  core.debug("Installing opam");
+  await install_opam();
 }
 
 run();
