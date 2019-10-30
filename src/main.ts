@@ -21,7 +21,7 @@ async function install_opam() {
   core.debug(`Setting opam executable`)
   await io.mkdirP(local_bin);
   core.debug(`Created ${local_bin}`)
-  await io.mv(opam_path, local_bin);
+  await io.mv(opam_path, path.join(local_bin, 'opam'));
   core.debug(`Moving opam binary to ${local_bin}`)
   core.addPath(local_bin);
   core.debug("Running opam init")
