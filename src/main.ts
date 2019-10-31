@@ -25,6 +25,7 @@ function get_opam_url() : string {
 
 const local_bin = path.join(process.env.HOME!, ".local", "bin");
 const opam_path = path.join(local_bin, 'opam');
+const dot_opam = path.join(process.env.HOME!, ".opam");
 
 async function setup_opam() {
   const opam_download_path = await tc.downloadTool(get_opam_url());
@@ -46,7 +47,7 @@ async function setup_ocaml() {
   const ocaml_version = '4.09.0';
   core.debug(`Installing OCaml switch ${ocaml_version}`);
   await exec.exec("opam", ["switch", "create", ocaml_version]);
-  const opam_switch = path.join(opam_path, ocaml_version);
+  const opam_switch = path.join(dot_opam, ocaml_version);
   const opam_bin = path.join(opam_switch, 'bin');
   // await tc.cacheDir(opam_switch, "OCaml", ocaml_version);
   core.addPath(opam_bin);
