@@ -9,7 +9,7 @@ const OPAM_BINARY_URL_LINUX = 'https://github.com/ocaml/opam/releases/download/2
 const OPAM_BINARY_URL_DARWIN = 'https://github.com/ocaml/opam/releases/download/2.0.5/opam-2.0.5-x86_64-darwin';
 const OPAM_BINARY_URL_OPENBSD = 'https://github.com/ocaml/opam/releases/download/2.0.5/opam-2.0.5-x86_64-openbsd';
 const OPAM_VERSION = '2.0.5';
-const OCAML_DEFAULT_VERSION = '4.0.9';
+const OCAML_DEFAULT_VERSION = '4.09.0';
 
 function get_opam_url() : string {
   switch (process.platform) {
