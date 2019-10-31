@@ -35,7 +35,7 @@ async function install_opam() {
   core.debug(`Moving opam binary to ${local_bin}`)
   core.addPath(local_bin);
   core.debug("Running opam init")
-  await exec.exec("opam", ["init", "-y", "--disable-sandboxing"]);
+  await exec.exec("opam", ["init", "-y", "--disable-sandboxing", "--bare"]);
 }
 
 async function run() {
