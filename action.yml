@@ -1,6 +1,9 @@
-name: 'OCaml Actions'
-description: 'GitHub Actions for OCaml'
+name: 'setup-opam-ocaml'
+description: 'Setup opam and OCaml'
 author: 'Fangyi Zhou'
+inputs:
+  ocaml_version:
+    description: 'Version of OCaml Compiler'
 runs:
   using: 'node12'
   main: 'lib/main.js'
