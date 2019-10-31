@@ -23,25 +23,42 @@ function get_opam_url() : string {
   }
 }
 
-async function install_opam() {
-  const local_bin = path.join(process.env.HOME!, ".local", "bin");
-  const opam_path = await tc.downloadTool(get_opam_url());
-  core.debug(`Downloaded opam ${OPAM_VERSION} to ${opam_path}`);
-  await fs.chmod(opam_path, 0o755); // set executable
+const local_bin = path.join(process.env.HOME!, ".local", "bin");
+const opam_path = path.join(local_bin, 'opam');
+
+async function setup_opam() {
+  const opam_download_path = await tc.downloadTool(get_opam_url());
+  core.debug(`Downloaded opam ${OPAM_VERSION} to ${opam_download_path}`);
+  await fs.chmod(opam_download_path, 0o755); // set executable
   core.debug(`Setting opam executable`)
   await io.mkdirP(local_bin);
   core.debug(`Created ${local_bin}`)
-  await io.mv(opam_path, path.join(local_bin, 'opam'));
+  await io.mv(opam_download_path, opam_path);
   core.debug(`Moving opam binary to ${local_bin}`)
   core.addPath(local_bin);
   core.debug("Running opam init")
   await exec.exec("opam", ["init", "-y", "--disable-sandboxing", "--bare"]);
+  core.debug("opam is initialised")
+}
+
+async function setup_ocaml() {
+  // TODO: Make OCaml version an argument
+  const ocaml_version = '4.09.0';
+  core.debug(`Installing OCaml switch ${ocaml_version}`);
+  await exec.exec("opam", ["switch", "create", ocaml_version]);
+  const opam_switch = path.join(opam_path, ocaml_version);
+  const opam_bin = path.join(opam_switch, 'bin');
+  // await tc.cacheDir(opam_switch, "OCaml", ocaml_version);
+  core.addPath(opam_bin);
+  core.debug("OCaml is installed");
 }
 
 async function run() {
   try {
-    core.debug("Installing opam");
-    await install_opam();
+    core.debug("Setting up opam");
+    await setup_opam();
+    core.debug("Installing OCaml")
+    await setup_ocaml();
   } catch (e) {
     core.setFailed(`Failed ${e}`);
   }
