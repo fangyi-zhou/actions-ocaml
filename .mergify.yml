@@ -2,7 +2,7 @@ pull_request_rules:
   - name: automatic merge for Dependabot pull requests
     conditions:
       - author=dependabot[bot]
-      - "status-success=Test typescript-action / test"
+      - "status-success=Test typescript-action / test (pull_request)"
     actions:
       merge:
         method: merge
